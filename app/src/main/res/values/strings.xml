@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">obleista-app</string>
+    <string name="mensajeBoton">Presióname</string>
 </resources>
