@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">obleista-app</string>
     <string name="mensajeBoton">Presióname</string>
+    <string name="mensajeBotonCamara">Abrir cámara</string>
 </resources>

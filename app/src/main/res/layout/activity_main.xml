@@ -10,4 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mensajeBoton" />
+
+    <Button android:id="@+id/miBotonCamara"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mensajeBotonCamara" />
+
 </LinearLayout>
