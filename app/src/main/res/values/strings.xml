@@ -2,4 +2,7 @@
     <string name="app_name">obleista-app</string>
     <string name="mensajeBoton">Presióname</string>
     <string name="mensajeBotonCamara">Abrir cámara</string>
+    <string name="mensajeBotonHora">Hora del dispositivo</string>
+    <string name="mensajeBotonFecha">Fecha del dispositivo</string>
+    <string name="mensajeBotonHoraYFecha">Hora y fecha</string>
 </resources>

@@ -16,4 +16,19 @@
         android:layout_height="wrap_content"
         android:text="@string/mensajeBotonCamara" />
 
+    <Button android:id="@+id/miBotonHora"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mensajeBotonHora" />
+
+    <Button android:id="@+id/miBotonFecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mensajeBotonFecha" />
+
+    <Button android:id="@+id/miBotonHoraYFecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mensajeBotonHoraYFecha" />
+
 </LinearLayout>
