@@ -24,29 +24,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button button = findViewById(R.id.miBoton);
-        Button buttonCamara = findViewById(R.id.miBotonCamara);
-        Button buttonHora = findViewById(R.id.miBotonHora);
-        Button buttonFecha = findViewById(R.id.miBotonFecha);
-        Button buttonHoraYFecha = findViewById(R.id.miBotonHoraYFecha);
-
-        // Configuración del evento click
-        button.setOnClickListener(v -> {
-            // Muestra el mensaje Toast
-            Toast.makeText(MainActivity.this, "Hello world", Toast.LENGTH_SHORT).show();
-            Log.d("botonPresionado", "BOTON PRESIONADO");
-        });
+        Button buttonHoraFecha = findViewById(R.id.miBotonHoraFecha);
 
         CameraManager cameraManager = new CameraManager(this, imageView);
 
-        buttonCamara.setOnClickListener(v -> cameraManager.abrirCamara());
-
         HoraFechaDispositivo horaFechaDispositivo = new HoraFechaDispositivo(MainActivity.this);
 
-        buttonHora.setOnClickListener(v -> horaFechaDispositivo.mostrarHoraDispositivo());
+        button.setOnClickListener(v -> cameraManager.abrirCamara());
 
-        buttonFecha.setOnClickListener(v -> horaFechaDispositivo.mostrarFechaDispositivo());
-
-        buttonHoraYFecha.setOnClickListener(v -> horaFechaDispositivo.mostrarHoraYFechaDispositivo());
+        buttonHoraFecha.setOnClickListener(v -> horaFechaDispositivo.mostrarHoraYFechaDispositivo());
     }
 
 }
