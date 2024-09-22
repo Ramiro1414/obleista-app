@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(foreignKeys = {
+@Entity(tableName = "linea_poligono", foreignKeys = {
         @ForeignKey(entity = Poligono.class,
                 parentColumns = "id",
                 childColumns = "poligonoId",

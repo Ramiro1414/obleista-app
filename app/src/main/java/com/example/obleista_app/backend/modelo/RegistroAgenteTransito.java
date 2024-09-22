@@ -2,12 +2,17 @@ package com.example.obleista_app.backend.modelo;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.obleista_app.backend.repository.Converter;
+
 import java.sql.Timestamp;
 
-@Entity
+@Entity(tableName = "registro_agente_transito")
 public class RegistroAgenteTransito {
     @PrimaryKey(autoGenerate = true)
     private int id;
+    @TypeConverters(Converter.class)
     private Timestamp hora;
     private String patente;
     private double latitud;

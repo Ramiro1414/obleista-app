@@ -2,13 +2,19 @@ package com.example.obleista_app.backend.modelo;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.obleista_app.backend.repository.Converter;
+
 import java.sql.Timestamp;
 
-@Entity
+@Entity(tableName = "registro_estacionamiento_sin_app")
 public class RegistroEstacionamientoSinApp {
     @PrimaryKey(autoGenerate = true)
     private int id;
+    @TypeConverters(Converter.class)
     private Timestamp horaInicio;
+    @TypeConverters(Converter.class)
     private Timestamp horaFin;
     private String patente;
 

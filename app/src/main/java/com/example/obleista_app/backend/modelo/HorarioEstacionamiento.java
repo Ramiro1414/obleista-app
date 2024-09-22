@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.util.Date;
 
-@Entity
+@Entity(tableName = "horario_estacionamiento")
 public class HorarioEstacionamiento {
     @PrimaryKey(autoGenerate = true)
     private int id;
