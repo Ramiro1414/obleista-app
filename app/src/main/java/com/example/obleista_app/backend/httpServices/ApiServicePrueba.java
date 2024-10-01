@@ -9,6 +9,6 @@ public interface ApiServicePrueba {
     @GET("datos/actualizar")
     Call<DataPackage> obtenerDatos();
 
-    @POST("datos/registrar")
+    @POST("datos/registrar/obleista")
     Call<DataPackage> registrarDatos(@Body Object o);
 }

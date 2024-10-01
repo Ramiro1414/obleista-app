@@ -2,18 +2,13 @@ package com.example.obleista_app.backend.modelo;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import com.example.obleista_app.backend.repository.Converter;
-
 import java.sql.Timestamp;
 
 @Entity(tableName = "registro_agente_transito")
 public class RegistroAgenteTransito {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    @TypeConverters(Converter.class)
-    private Timestamp hora;
+    private Long horaRegistro;
     private String patente;
     private double latitud;
     private double longitud;
@@ -22,9 +17,9 @@ public class RegistroAgenteTransito {
     public RegistroAgenteTransito() {
     }
 
-    public RegistroAgenteTransito(int id, Timestamp hora, String patente, double latitud, double longitud, String foto) {
+    public RegistroAgenteTransito(int id, Timestamp horaRegistro, String patente, double latitud, double longitud, String foto) {
         this.id = id;
-        this.hora = hora;
+        this.horaRegistro = horaRegistro.getTime();
         this.patente = patente;
         this.latitud = latitud;
         this.longitud = longitud;
@@ -39,12 +34,10 @@ public class RegistroAgenteTransito {
         this.id = id;
     }
 
-    public Timestamp getHora() {
-        return hora;
-    }
+    public Long getHoraRegistro() { return horaRegistro; }
 
-    public void setHora(Timestamp hora) {
-        this.hora = hora;
+    public void setHoraRegistro(Long hora) {
+        this.horaRegistro = hora;
     }
 
     public String getPatente() {
@@ -83,7 +76,7 @@ public class RegistroAgenteTransito {
     public String toString() {
         return "RegistroAgenteTransito{" +
                 "id=" + id +
-                ", hora=" + hora +
+                ", hora=" + horaRegistro +
                 ", patente='" + patente + '\'' +
                 ", latitud=" + latitud +
                 ", longitud=" + longitud +

@@ -33,7 +33,8 @@ public class PruebaEnviarDatos {
 
     public void enviarRegistroConductor() {
 
-        Timestamp hora = new Timestamp(System.currentTimeMillis());
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        Timestamp hora = new Timestamp(calendar.getTimeInMillis());
         String patente = "ABC123";
         double latitud = -42.87654321;
         double longitud = -65.12345678;
