@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">obleista-app</string>
-    <string name="mensajeBoton">Presióname</string>
+    <string name="app_name">EstacionAR Agentes Tránsito</string>
+    <string name="mensajeBoton">Abrir cámara</string>
     <string name="mensajeBotonHoraYFecha">Hora y fecha</string>
 </resources>

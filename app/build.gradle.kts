@@ -42,4 +42,10 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler) // Para Java
+
+    // Retrofit y Gson Converter
+    implementation(libs.retrofit)
+    implementation(libs.gson.converter)
+
+
 }
