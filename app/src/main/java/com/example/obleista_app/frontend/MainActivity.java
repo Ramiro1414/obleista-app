@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.obleista_app.R;
+import com.example.obleista_app.backend.httpServices.PruebaEnviarDatos;
 import com.example.obleista_app.backend.httpServices.PruebaObtenerDatos;
 import com.example.obleista_app.backend.service.CameraManager;
 import com.example.obleista_app.backend.service.HoraFechaDispositivo;
@@ -49,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonPruebaSendData.setOnClickListener(v -> {
-            //PruebaEnviarDatos dataSender = new PruebaEnviarDatos(this);
-            //dataSender.enviarRegistroConductor();
+            PruebaEnviarDatos dataSender = new PruebaEnviarDatos(this);
+            dataSender.enviarRegistroConductor();
         });
     }
 
     public void renderTitulo() {
         TextView textViewTitle = findViewById(R.id.textView3321);
-        String text = "EstacionAR";
+        String text = "EstacionAR obleistas";
         SpannableString spannableString = new SpannableString(text);
 
         // Obtener el color cyan de los recursos

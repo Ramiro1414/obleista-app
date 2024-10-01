@@ -14,7 +14,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:textColor="#282828"
-        android:textSize="36sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <Space
