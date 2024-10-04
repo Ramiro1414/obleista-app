@@ -2,4 +2,9 @@
     <string name="app_name">EstacionAR Agentes Tránsito</string>
     <string name="mensajeBoton">Abrir cámara</string>
     <string name="mensajeBotonHoraYFecha">Hora y fecha</string>
+    <string name="mensajeBotonRegresar">Regresar</string>
+    <string name="mensajeVenderEstacionamiento">Vender estacionamiento</string>
+    <string name="mensajeCampoTextoIngresarPatente">Ingresar patente del vehiculo</string>
+    <string name="mensajeHoraInicio">Hora de inicio del estacionamiento</string>
+    <string name="mensajeHoraFin">Hora de fin del estacionamiento</string>
 </resources>

@@ -16,7 +16,7 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vender_estacionamiento);
 
-        Button btnRegresar = findViewById(R.id.btnRegresar);
+        Button btnRegresar = findViewById(R.id.buttonRegresar);
         btnRegresar.setOnClickListener(v -> {
             // Regresar a la actividad principal
             Intent intent = new Intent(VenderEstacionamientoActivity.this, MainActivity.class);
