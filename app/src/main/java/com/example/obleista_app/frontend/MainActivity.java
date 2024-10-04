@@ -1,15 +1,14 @@
 package com.example.obleista_app.frontend;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonHoraFecha = findViewById(R.id.miBotonHoraFecha);
         Button buttonPruebaData = findViewById(R.id.buttonPruebaData);
         Button buttonPruebaSendData = findViewById(R.id.buttonPruebaSendData);
+        Button buttonVenderEstacionamiento = findViewById(R.id.buttonVenderEstacionamiento);
 
         CameraManager cameraManager = new CameraManager(this, imageView);
 
@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
         buttonPruebaSendData.setOnClickListener(v -> {
             PruebaEnviarDatos dataSender = new PruebaEnviarDatos(this);
             dataSender.enviarRegistroConductor();
+        });
+
+        buttonVenderEstacionamiento.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, VenderEstacionamientoActivity.class);
+            startActivity(intent);
         });
     }
 
