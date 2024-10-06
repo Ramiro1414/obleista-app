@@ -5,7 +5,7 @@
         <!-- Iconos de la barra de estado en negro cuando la barra es clara -->
         <item name="android:windowLightStatusBar">true</item>
         <!-- Color principal de los botones y otros elementos -->
-        <item name="colorPrimary">@color/cyan</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/cyan</item>
         <item name="colorAccent">@color/cyan</item>
     </style>
