@@ -11,12 +11,19 @@ import android.net.Uri;
 import android.os.Build;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.obleista_app.frontend.CrearRegistroAgenteTransitoActivity;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class CameraManager {
 
@@ -25,6 +32,7 @@ public class CameraManager {
     public ActivityResultLauncher<Intent> takePictureLauncher;
     private final Context context;
     private final String RUTA_IMAGENES = "Registros_Estacionamiento/";
+    private String photoName;
 
     public CameraManager(AppCompatActivity activity, ImageView imageView) {
         this.context = activity;
@@ -35,11 +43,17 @@ public class CameraManager {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == AppCompatActivity.RESULT_OK) {
-                        // Mostrar la imagen en el ImageView
-                        if (imageUri != null) {
-                            Toast.makeText(this.context, "Imagen guardada en: " + imageUri, Toast.LENGTH_LONG).show();
-                            imageView.setImageURI(imageUri);
-                        }
+                        // Inicia la actividad CrearRegistroAgenteTransitoActivity
+                        Log.d("BBBBBBBBBBBBBBBB", "EJECUTA ANTES");
+
+                        String readPhotoName = readFromFile();
+
+                        Intent intent = new Intent(context, CrearRegistroAgenteTransitoActivity.class);
+                        intent.putExtra("photoName", readPhotoName);
+
+                        clearFile();
+
+                        context.startActivity(intent);
                     }
                 });
     }
@@ -61,11 +75,18 @@ public class CameraManager {
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         }
         String imgName = String.valueOf(System.currentTimeMillis());
+        Log.d("AAAAAAAAAAAAAAAAAAAAAA", imgName + ".jpg");
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, imgName+".jpg");
         contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/"+RUTA_IMAGENES);
+
+        this.photoName = imgName+".jpg";
+
+        // Llamar al método para escribir en el archivo
+        writeToFile(this.photoName);
+
         Uri finalUri = resolver.insert(uri, contentValues);
-        imageUri = finalUri;
+        this.imageUri = finalUri;
         return finalUri;
 
     }
@@ -73,5 +94,45 @@ public class CameraManager {
     /** Check if this device has a camera */
     private boolean checkCameraHardware(Context context) {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
+
+    // Método para escribir en un archivo
+    private void writeToFile(String data) {
+        File file = new File(context.getFilesDir(), "tmp.dat"); // Archivo dentro del almacenamiento interno
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(data.getBytes());
+            fos.flush();
+            Log.d("FILE WRITING", "Archivo tmp.dat escrito correctamente.");
+        } catch (IOException e) {
+            Log.e("FILE WRITING ERROR", "Error al escribir el archivo tmp.dat: " + e.getMessage());
+        }
+    }
+
+    private String readFromFile() {
+        File file = new File(context.getFilesDir(), "tmp.dat");
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try (FileInputStream fis = new FileInputStream(file)) {
+            int character;
+            while ((character = fis.read()) != -1) {
+                stringBuilder.append((char) character);
+            }
+            Log.d("FILE READING", "Contenido leído del archivo: " + stringBuilder.toString());
+        } catch (IOException e) {
+            Log.e("FILE READING ERROR", "Error al leer el archivo tmp.dat: " + e.getMessage());
+        }
+
+        return stringBuilder.toString();
+    }
+
+    private void clearFile() {
+        File file = new File(context.getFilesDir(), "tmp.dat");
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            // Abre el archivo en modo escritura y no escribe nada, vaciando el contenido.
+            fos.write(new byte[0]);
+            Log.d("FILE CLEAR", "Archivo tmp.dat vaciado correctamente.");
+        } catch (IOException e) {
+            Log.e("FILE CLEAR ERROR", "Error al vaciar el archivo tmp.dat: " + e.getMessage());
+        }
     }
 }

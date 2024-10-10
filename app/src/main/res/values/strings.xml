@@ -3,6 +3,8 @@
     <string name="mensajeBoton">Abrir cámara</string>
     <string name="mensajeBotonHoraYFecha">Hora y fecha</string>
     <string name="mensajeBotonRegresar">Regresar</string>
+    <string name="mensajeBotonGuardar">Guardar</string>
+    <string name="mensajeFotografiaTomada">Fotografia tomada</string>
     <string name="mensajeVenderEstacionamiento">Vender estacionamiento</string>
     <string name="mensajeCampoTextoIngresarPatente">Ingresar patente del vehiculo</string>
     <string name="mensajeHoraInicio">Hora de inicio del estacionamiento</string>
