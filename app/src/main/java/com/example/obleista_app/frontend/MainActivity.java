@@ -9,24 +9,45 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import com.example.obleista_app.R;
 import com.example.obleista_app.backend.httpServices.PruebaEnviarDatos;
 import com.example.obleista_app.backend.httpServices.PruebaObtenerDatos;
+import com.example.obleista_app.backend.modelo.RegistroAgenteTransito;
+import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBase;
 import com.example.obleista_app.backend.service.CameraManager;
 import com.example.obleista_app.backend.service.HoraFechaDispositivo;
+
+import java.sql.Timestamp;
 
 public class MainActivity extends AppCompatActivity {
 
     private CameraManager cameraManager;
     private ImageView imageView;
+    private RegistroAgenteTransitoDataBase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Inicializa la base de datos
+        db = Room.databaseBuilder(getApplicationContext(),
+                        RegistroAgenteTransitoDataBase.class, "registro_agente_transito_db")
+                .allowMainThreadQueries() // Para simplificar en pruebas
+                .build();
+
+        // Configura el botón
+        Button botonVerRegistro = findViewById(R.id.botonVerRegistro);
+        botonVerRegistro.setOnClickListener(v -> {
+            // Cambia el ID a un ID existente para probar
+            int idDePrueba = 3; // Cambia esto según el registro que quieras consultar
+            obtenerRegistroPorId(idDePrueba);
+        });
 
         renderTitulo();
 
@@ -72,6 +93,25 @@ public class MainActivity extends AppCompatActivity {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(cyanColor);
         spannableString.setSpan(colorSpan, 8, 10, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewTitle.setText(spannableString);
+    }
+
+    public void obtenerRegistroPorId(int id) {
+        new Thread(() -> {
+            RegistroAgenteTransito registro = db.registroDao().findById(id);
+            if (registro != null) {
+                runOnUiThread(() -> {
+                    String mensaje = "ID: " + registro.getId() + "\n" +
+                            "Hora Registro: " + new Timestamp(registro.getHoraRegistro()) + "\n" +
+                            "Patente: " + registro.getPatente() + "\n" +
+                            "Latitud: " + registro.getLatitud() + "\n" +
+                            "Longitud: " + registro.getLongitud() + "\n" +
+                            "Foto: " + registro.getFoto();
+                    Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
+                });
+            } else {
+                runOnUiThread(() -> Toast.makeText(this, "Registro no encontrado", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
     }
 
 }

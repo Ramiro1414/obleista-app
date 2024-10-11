@@ -18,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="horaRegistro"
+        android:focusable="false"
+        android:clickable="false"
         android:inputType="text" />
 
     <EditText
@@ -25,6 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="latitud"
+        android:focusable="false"
+        android:clickable="false"
         android:inputType="text" />
 
     <EditText
@@ -32,6 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="longitud"
+        android:focusable="false"
+        android:clickable="false"
         android:inputType="text" />
 
     <!-- Imagen que se muestra desde /Pictures/Registros_Estacionamiento -->
