@@ -1,6 +1,8 @@
 package com.example.obleista_app.frontend;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import android.text.Spannable;
@@ -12,11 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.example.obleista_app.R;
 import com.example.obleista_app.backend.httpServices.PruebaEnviarDatos;
 import com.example.obleista_app.backend.httpServices.PruebaObtenerDatos;
+import com.example.obleista_app.backend.httpServices.SubirRegistros;
 import com.example.obleista_app.backend.modelo.RegistroAgenteTransito;
 import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBase;
 import com.example.obleista_app.backend.service.CameraManager;
@@ -29,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private CameraManager cameraManager;
     private ImageView imageView;
     private RegistroAgenteTransitoDataBase db;
+    private static final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonPruebaData = findViewById(R.id.buttonPruebaData);
         Button buttonPruebaSendData = findViewById(R.id.buttonPruebaSendData);
         Button buttonVenderEstacionamiento = findViewById(R.id.buttonVenderEstacionamiento);
+        Button buttonSubirRegistros = findViewById(R.id.buttonSubirRegistros);
 
         CameraManager cameraManager = new CameraManager(this, imageView);
 
@@ -64,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(v -> cameraManager.abrirCamara());
 
         buttonHoraFecha.setOnClickListener(v -> horaFechaDispositivo.mostrarHoraYFechaDispositivo());
+
+        buttonSubirRegistros.setOnClickListener( v -> {
+            SubirRegistros subirRegistros = new SubirRegistros(this);
+            subirRegistros.enviarRegistrosASistemaCentral();
+        });
 
         buttonPruebaData.setOnClickListener(v -> {
             PruebaObtenerDatos dataGetter = new PruebaObtenerDatos(this);

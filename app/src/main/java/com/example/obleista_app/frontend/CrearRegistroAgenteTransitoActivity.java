@@ -161,24 +161,4 @@ public class CrearRegistroAgenteTransitoActivity extends AppCompatActivity {
         }).start();
     }
 
-    public byte[] convertImageToBytes(String imagePath) {
-        // Cargar la imagen desde la ruta
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
-        if (bitmap == null) {
-            Log.e("IMAGE CONVERSION", "Error: Imagen no encontrada en la ruta especificada.");
-            return null;
-        }
-
-        // Crear un ByteArrayOutputStream para convertir el bitmap a bytes
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        // Comprimir el bitmap en el formato deseado (por ejemplo, JPEG) y convertirlo a bytes
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-        // Convertir a arreglo de bytes
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-        return byteArray;
-    }
 }

@@ -26,4 +26,7 @@ public interface RegistroAgenteTransitoDao {
 
     @Delete
     void delete(RegistroAgenteTransito registro);
+
+    @Query("DELETE FROM registro_agente_transito")
+    void deleteAll();
 }
