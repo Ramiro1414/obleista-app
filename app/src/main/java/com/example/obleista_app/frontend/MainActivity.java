@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttonSubirRegistros.setOnClickListener( v -> {
             SubirRegistros subirRegistros = new SubirRegistros(this);
-            subirRegistros.enviarRegistrosASistemaCentral();
+            subirRegistros.enviarRegistrosASistemaCentralConFotos();
         });
 
         buttonPruebaData.setOnClickListener(v -> {

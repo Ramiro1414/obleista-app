@@ -11,6 +11,8 @@ room = "2.6.1"
 retrofit = "2.9.0"           # Añadimos la versión de Retrofit
 gsonConverter = "2.9.0"      # Añadimos la versión del convertidor Gson
 playServicesLocation = "21.3.0"
+kotlinx-coroutines = "1.6.0"
+lifecycle = "2.6.2" # O la versión que necesites
 
 
 [libraries]

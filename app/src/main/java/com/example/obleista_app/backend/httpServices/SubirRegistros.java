@@ -1,26 +1,24 @@
 package com.example.obleista_app.backend.httpServices;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.example.obleista_app.backend.modelo.RegistroAgenteTransito;
+import com.example.obleista_app.backend.modelo.RegistroAgenteTransitoDTO;
 import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBase;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +32,8 @@ public class SubirRegistros {
     private final ApiServicePrueba apiService;
     private final Context context;
     private RegistroAgenteTransitoDataBase db;
+    // Agrega un ExecutorService con un tamaño de hilo fijo
+    private final ExecutorService executorService = Executors.newFixedThreadPool(4); // Ajusta el tamaño del pool según sea necesario
 
     public SubirRegistros(Context context) {
         this.context = context;
@@ -105,7 +105,77 @@ public class SubirRegistros {
         });
     }
 
-    public byte[] convertirImagenEnArregloDeBytes(String imagePath) {
+    public void enviarRegistrosASistemaCentralConFotos() {
+        // Primero obtenemos todos los registros de la base de datos
+        executorService.execute(() -> {
+            List<RegistroAgenteTransito> registros = db.registroDao().findAll();
+
+            if (registros != null && !registros.isEmpty()) {
+                for (RegistroAgenteTransito registro : registros) {
+                    // Para cada registro, enviamos los datos al backend
+                    enviarRegistroConFoto(registro);
+                }
+                // Asegúrate de eliminar los registros después de que todos se hayan enviado
+                db.registroDao().deleteAll();
+                // Se pueden eliminar las fotografías también, si es necesario
+            } else {
+                ((Activity) context).runOnUiThread(() -> {
+                    Toast.makeText(context, "No hay registros para enviar", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
+    private void enviarRegistroConFoto(RegistroAgenteTransito registro) {
+
+        Timestamp horaRegistro = new Timestamp(registro.getHoraRegistro());
+
+        byte[] foto = convertirImagenEnArregloDeBytes(registro.getFoto());
+
+        // Creamos un nuevo objeto para enviar, con el ID siempre en 0
+        RegistroAgenteTransitoDTO registroParaEnviar = new RegistroAgenteTransitoDTO(
+                0, // El ID se define como 0, como solicitaste
+                horaRegistro,
+                registro.getPatente(),
+                registro.getLatitud(),
+                registro.getLongitud(),
+                foto
+        );
+
+        apiService.registrarDatos(registroParaEnviar).enqueue(new Callback<DataPackage>() {
+            @Override
+            public void onResponse(Call<DataPackage> call, Response<DataPackage> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ((Activity) context).runOnUiThread(() -> {
+                        Toast.makeText(context, "Registro enviado exitosamente", Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    ((Activity) context).runOnUiThread(() -> {
+                        Toast.makeText(context, "Error al enviar registro: " + response.code(), Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DataPackage> call, Throwable t) {
+                Log.e("DataError", "Fallo en la solicitud: " + t.getMessage());
+                ((Activity) context).runOnUiThread(() -> {
+                    Toast.makeText(context, "Error al enviar registro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
+    private void eliminarRegistrosYFotografias() {
+        db.registroDao().deleteAll();
+    }
+
+    public byte[] convertirImagenEnArregloDeBytes(String imageName) {
+
+        // Construir la ruta completa de la imagen
+        String imagePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                + "/Registros_Estacionamiento/" + imageName;
+
         // Cargar la imagen desde la ruta
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
 
