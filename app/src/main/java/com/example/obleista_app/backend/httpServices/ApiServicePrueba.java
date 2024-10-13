@@ -6,9 +6,9 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ApiServicePrueba {
-    @GET("datos/actualizar")
+    @GET("comunicador/actualizar")
     Call<DataPackage> obtenerDatos();
 
-    @POST("datos/registrar/obleista")
+    @POST("comunicador/registrar/obleista")
     Call<DataPackage> registrarDatos(@Body Object o);
 }

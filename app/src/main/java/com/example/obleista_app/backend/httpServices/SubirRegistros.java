@@ -115,9 +115,7 @@ public class SubirRegistros {
                     // Para cada registro, enviamos los datos al backend
                     enviarRegistroConFoto(registro);
                 }
-                // Asegúrate de eliminar los registros después de que todos se hayan enviado
                 db.registroDao().deleteAll();
-                // Se pueden eliminar las fotografías también, si es necesario
             } else {
                 ((Activity) context).runOnUiThread(() -> {
                     Toast.makeText(context, "No hay registros para enviar", Toast.LENGTH_SHORT).show();
