@@ -37,6 +37,7 @@ public class SubirRegistros {
     private RegistroEstacionamientoSinAppDataBase dbEstacionamientoSinApp;
     // Agrega un ExecutorService con un tamaño de hilo fijo
     private final ExecutorService executorService = Executors.newFixedThreadPool(4); // Ajusta el tamaño del pool según sea necesario
+    private final static int VALOR_COMPRESION_IMAGEN = 70;
 
     public SubirRegistros(Context context) {
         this.context = context;
@@ -242,7 +243,7 @@ public class SubirRegistros {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         // Comprimir el bitmap en el formato deseado (por ejemplo, JPEG) y convertirlo a bytes
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, VALOR_COMPRESION_IMAGEN, byteArrayOutputStream);
 
         // Convertir a arreglo de bytes
         byte[] byteArray = byteArrayOutputStream.toByteArray();
