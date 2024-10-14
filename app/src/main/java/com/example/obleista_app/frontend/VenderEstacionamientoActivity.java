@@ -36,7 +36,9 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
 
         EditText inputPatente = findViewById(R.id.inputPatente);
         TimePicker timePickerInicio = findViewById(R.id.horaInicio);
+        timePickerInicio.setIs24HourView(true);
         TimePicker timePickerFin = findViewById(R.id.horaFin);
+        timePickerFin.setIs24HourView(true);
         Button btnVender = findViewById(R.id.buttonVenderEstacionamiento);
 
         btnVender.setOnClickListener(v -> {
@@ -66,22 +68,8 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
                 return;
             }
 
-            // Si las validaciones pasan, crea el registro y lo guarda en la base de datos
-            RegistroEstacionamientoSinApp registro = new RegistroEstacionamientoSinApp();
-            registro.setPatente(patente);
-            registro.setHoraInicio(horaInicioMillis);
-            registro.setHoraFin(horaFinMillis);
-
-            new Thread(() -> {
-                db.registroDao().insert(registro);
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Estacionamiento vendido", Toast.LENGTH_SHORT).show();
-                    // Regresar a la actividad principal
-                    Intent intent = new Intent(VenderEstacionamientoActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                });
-            }).start();
+            // Muestra el cuadro de diálogo para confirmar la venta
+            mostrarDialogoConfirmacion(patente, horaInicioMillis, horaFinMillis);
         });
 
         Button btnRegresar = findViewById(R.id.buttonRegresar);
@@ -91,6 +79,52 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+    }
+
+    private void mostrarDialogoConfirmacion(String patente, long horaInicioMillis, long horaFinMillis) {
+        // Convertir milisegundos a horas y minutos para mostrar en el resumen
+        Calendar calendarInicio = Calendar.getInstance();
+        calendarInicio.setTimeInMillis(horaInicioMillis);
+        String horaInicioStr = String.format("%02d:%02d", calendarInicio.get(Calendar.HOUR_OF_DAY), calendarInicio.get(Calendar.MINUTE));
+
+        Calendar calendarFin = Calendar.getInstance();
+        calendarFin.setTimeInMillis(horaFinMillis);
+        String horaFinStr = String.format("%02d:%02d", calendarFin.get(Calendar.HOUR_OF_DAY), calendarFin.get(Calendar.MINUTE));
+
+        // Crear el cuadro de diálogo
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmar venta")
+                .setMessage("Patente: " + patente + "\nHora de inicio: " + horaInicioStr + "\nHora de fin: " + horaFinStr)
+                .setPositiveButton("CONFIRMAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Si se confirma, guarda el registro en la base de datos
+                        RegistroEstacionamientoSinApp registro = new RegistroEstacionamientoSinApp();
+                        registro.setPatente(patente);
+                        registro.setHoraInicio(horaInicioMillis);
+                        registro.setHoraFin(horaFinMillis);
+
+                        new Thread(() -> {
+                            db.registroDao().insert(registro);
+                            runOnUiThread(() -> {
+                                Toast.makeText(VenderEstacionamientoActivity.this, "Estacionamiento vendido", Toast.LENGTH_SHORT).show();
+                                // Regresar a la actividad principal
+                                Intent intent = new Intent(VenderEstacionamientoActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            });
+                        }).start();
+                    }
+                })
+                .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Cerrar el cuadro de diálogo
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private long convertirAHoraEnMilisegundos(int hora, int minuto) {
