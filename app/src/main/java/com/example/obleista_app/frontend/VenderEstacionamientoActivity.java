@@ -11,6 +11,9 @@ import com.example.obleista_app.R;
 import com.example.obleista_app.backend.modelo.RegistroEstacionamientoSinApp;
 import com.example.obleista_app.backend.repository.RegistroEstacionamientoSinAppDataBase;
 
+import android.app.AlertDialog;  // Agregar esta importación
+import android.content.DialogInterface;  // Agregar esta importación
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -47,20 +50,38 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
             long horaInicioMillis = convertirAHoraEnMilisegundos(horaInicio, minutoInicio);
             long horaFinMillis = convertirAHoraEnMilisegundos(horaFin, minutoFin);
 
-            if (!patente.isEmpty()) {
-                // Crea el registro y lo guarda en la base de datos
-                RegistroEstacionamientoSinApp registro = new RegistroEstacionamientoSinApp();
-                registro.setPatente(patente);
-                registro.setHoraInicio(horaInicioMillis);
-                registro.setHoraFin(horaFinMillis);
-
-                new Thread(() -> {
-                    db.registroDao().insert(registro);
-                    runOnUiThread(() -> Toast.makeText(this, "Estacionamiento vendido", Toast.LENGTH_SHORT).show());
-                }).start();
-            } else {
+            // Validaciones
+            if (patente.isEmpty()) {
                 Toast.makeText(this, "Por favor, ingrese la patente", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            if (horaInicioMillis == horaFinMillis) {
+                Toast.makeText(this, "La hora de inicio no puede ser igual a la hora de fin", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (horaFinMillis < horaInicioMillis) {
+                Toast.makeText(this, "La hora de fin no puede ser anterior a la hora de inicio", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Si las validaciones pasan, crea el registro y lo guarda en la base de datos
+            RegistroEstacionamientoSinApp registro = new RegistroEstacionamientoSinApp();
+            registro.setPatente(patente);
+            registro.setHoraInicio(horaInicioMillis);
+            registro.setHoraFin(horaFinMillis);
+
+            new Thread(() -> {
+                db.registroDao().insert(registro);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Estacionamiento vendido", Toast.LENGTH_SHORT).show();
+                    // Regresar a la actividad principal
+                    Intent intent = new Intent(VenderEstacionamientoActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+            }).start();
         });
 
         Button btnRegresar = findViewById(R.id.buttonRegresar);
