@@ -12,6 +12,7 @@ import androidx.room.Room;
 
 import com.example.obleista_app.backend.modelo.RegistroAgenteTransito;
 import com.example.obleista_app.backend.modelo.RegistroAgenteTransitoDTO;
+import com.example.obleista_app.backend.modelo.RegistroEstacionamientoSinApp;
 import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBase;
 
 import java.io.ByteArrayOutputStream;
@@ -49,6 +50,15 @@ public class SubirRegistros {
                         RegistroAgenteTransitoDataBase.class, "registro_agente_transito_db")
                 .fallbackToDestructiveMigration() // Manejo de migraciones, ajusta según sea necesario
                 .build();
+    }
+
+    /** Envia los registros de conductor sin app a la base de datos del sistema central */
+    public void enviarRegistrosConductorSinApp() {
+        return;
+    }
+
+    public void enviarRegistroConductorSinApp(RegistroEstacionamientoSinApp registro) {
+
     }
 
     public void enviarRegistrosASistemaCentral() {

@@ -4,6 +4,7 @@
     <string name="mensajeBotonHoraYFecha">Hora y fecha</string>
     <string name="mensajeBotonRegresar">Regresar</string>
     <string name="mensajeBotonGuardar">Guardar</string>
+    <string name="mensajeSubirRegistros">Subir registros</string>
     <string name="mensajeverRegistro">Ver registro</string>
     <string name="mensajeFotografiaTomada">Fotografia tomada</string>
     <string name="mensajeVenderEstacionamiento">Vender estacionamiento</string>

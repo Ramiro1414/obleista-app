@@ -11,4 +11,7 @@ public interface ApiServicePrueba {
 
     @POST("comunicador/registrar/obleista")
     Call<DataPackage> registrarDatos(@Body Object o);
+
+    @POST("comunicador/registrar/conductor-sin-aplicacion")
+    Call<DataPackage> registrarDatosConductor(@Body Object o);
 }

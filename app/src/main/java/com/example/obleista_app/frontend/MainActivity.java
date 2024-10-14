@@ -1,8 +1,6 @@
 package com.example.obleista_app.frontend;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import android.text.Spannable;
@@ -14,26 +12,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.example.obleista_app.R;
-import com.example.obleista_app.backend.httpServices.PruebaEnviarDatos;
-import com.example.obleista_app.backend.httpServices.PruebaObtenerDatos;
 import com.example.obleista_app.backend.httpServices.SubirRegistros;
-import com.example.obleista_app.backend.modelo.RegistroAgenteTransito;
-import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBase;
+import com.example.obleista_app.backend.modelo.RegistroEstacionamientoSinApp;
+import com.example.obleista_app.backend.repository.RegistroEstacionamientoSinAppDataBase;
 import com.example.obleista_app.backend.service.CameraManager;
 import com.example.obleista_app.backend.service.HoraFechaDispositivo;
 
-import java.sql.Timestamp;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private CameraManager cameraManager;
     private ImageView imageView;
-    private RegistroAgenteTransitoDataBase db;
+    private RegistroEstacionamientoSinAppDataBase db;
     private static final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
@@ -43,24 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Inicializa la base de datos
         db = Room.databaseBuilder(getApplicationContext(),
-                        RegistroAgenteTransitoDataBase.class, "registro_agente_transito_db")
+                        RegistroEstacionamientoSinAppDataBase.class, "registros_estacionamiento_db")
                 .allowMainThreadQueries() // Para simplificar en pruebas
                 .build();
-
-        // Configura el botón
-        Button botonVerRegistro = findViewById(R.id.botonVerRegistro);
-        botonVerRegistro.setOnClickListener(v -> {
-            // Cambia el ID a un ID existente para probar
-            int idDePrueba = 3; // Cambia esto según el registro que quieras consultar
-            obtenerRegistroPorId(idDePrueba);
-        });
 
         renderTitulo();
 
         Button button = findViewById(R.id.miBoton);
         Button buttonHoraFecha = findViewById(R.id.miBotonHoraFecha);
-        Button buttonPruebaData = findViewById(R.id.buttonPruebaData);
-        Button buttonPruebaSendData = findViewById(R.id.buttonPruebaSendData);
         Button buttonVenderEstacionamiento = findViewById(R.id.buttonVenderEstacionamiento);
         Button buttonSubirRegistros = findViewById(R.id.buttonSubirRegistros);
 
@@ -77,21 +61,27 @@ public class MainActivity extends AppCompatActivity {
             subirRegistros.enviarRegistrosASistemaCentralConFotos();
         });
 
-        buttonPruebaData.setOnClickListener(v -> {
-            PruebaObtenerDatos dataGetter = new PruebaObtenerDatos(this);
-            dataGetter.obtenerDatosDelServidor();
-        });
-
-        buttonPruebaSendData.setOnClickListener(v -> {
-            PruebaEnviarDatos dataSender = new PruebaEnviarDatos(this);
-            dataSender.enviarRegistroConductor();
-        });
-
         buttonVenderEstacionamiento.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VenderEstacionamientoActivity.class);
             startActivity(intent);
         });
-    }
+
+        Button buttonSelectPrimerRegistro = findViewById(R.id.buttonSelectPrimerRegistro);
+        buttonSelectPrimerRegistro.setOnClickListener(v -> {
+                // Ejecutar la consulta en un hilo separado para evitar bloquear la interfaz de usuario
+                new Thread(() -> {
+                    List<RegistroEstacionamientoSinApp> registros = db.registroDao().findAll();
+                    if (registros != null && !registros.isEmpty()) {
+                        RegistroEstacionamientoSinApp primerRegistro = registros.get(0);
+                        String mensaje = "Primer registro: " + primerRegistro.getPatente() + ", Hora Inicio: " + primerRegistro.getHoraFin() + ", Hora Fin: " + primerRegistro.getHoraFin();
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_SHORT).show());
+                    } else {
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this, "No hay registros en la base de datos", Toast.LENGTH_SHORT).show());
+                    }
+                }).start();
+            });
+        }
+
 
     public void renderTitulo() {
         TextView textViewTitle = findViewById(R.id.textView3321);
@@ -105,25 +95,6 @@ public class MainActivity extends AppCompatActivity {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(cyanColor);
         spannableString.setSpan(colorSpan, 8, 10, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewTitle.setText(spannableString);
-    }
-
-    public void obtenerRegistroPorId(int id) {
-        new Thread(() -> {
-            RegistroAgenteTransito registro = db.registroDao().findById(id);
-            if (registro != null) {
-                runOnUiThread(() -> {
-                    String mensaje = "ID: " + registro.getId() + "\n" +
-                            "Hora Registro: " + new Timestamp(registro.getHoraRegistro()) + "\n" +
-                            "Patente: " + registro.getPatente() + "\n" +
-                            "Latitud: " + registro.getLatitud() + "\n" +
-                            "Longitud: " + registro.getLongitud() + "\n" +
-                            "Foto: " + registro.getFoto();
-                    Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
-                });
-            } else {
-                runOnUiThread(() -> Toast.makeText(this, "Registro no encontrado", Toast.LENGTH_SHORT).show());
-            }
-        }).start();
     }
 
 }
