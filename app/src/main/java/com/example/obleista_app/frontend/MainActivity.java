@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     private CameraManager cameraManager;
     private ImageView imageView;
-    private RegistroEstacionamientoSinAppDataBase db;
     private static final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
@@ -35,18 +34,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inicializa la base de datos
-        db = Room.databaseBuilder(getApplicationContext(),
-                        RegistroEstacionamientoSinAppDataBase.class, "registros_estacionamiento_db")
-                .allowMainThreadQueries() // Para simplificar en pruebas
-                .build();
-
         renderTitulo();
 
         Button button = findViewById(R.id.miBoton);
         Button buttonHoraFecha = findViewById(R.id.miBotonHoraFecha);
         Button buttonVenderEstacionamiento = findViewById(R.id.buttonVenderEstacionamiento);
         Button buttonSubirRegistros = findViewById(R.id.buttonSubirRegistros);
+        Button buttonSubirRegistrosEstacionamiento = findViewById(R.id.buttonSubirRegistrosEstacionamiento);
 
         CameraManager cameraManager = new CameraManager(this, imageView);
 
@@ -55,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(v -> cameraManager.abrirCamara());
 
         buttonHoraFecha.setOnClickListener(v -> horaFechaDispositivo.mostrarHoraYFechaDispositivo());
+
+        buttonSubirRegistrosEstacionamiento.setOnClickListener( v -> {
+            SubirRegistros subirRegistros = new SubirRegistros(this);
+            subirRegistros.enviarRegistrosConductorSinApp();
+        });
 
         buttonSubirRegistros.setOnClickListener( v -> {
             SubirRegistros subirRegistros = new SubirRegistros(this);
@@ -65,23 +64,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, VenderEstacionamientoActivity.class);
             startActivity(intent);
         });
-
-        Button buttonSelectPrimerRegistro = findViewById(R.id.buttonSelectPrimerRegistro);
-        buttonSelectPrimerRegistro.setOnClickListener(v -> {
-                // Ejecutar la consulta en un hilo separado para evitar bloquear la interfaz de usuario
-                new Thread(() -> {
-                    List<RegistroEstacionamientoSinApp> registros = db.registroDao().findAll();
-                    if (registros != null && !registros.isEmpty()) {
-                        RegistroEstacionamientoSinApp primerRegistro = registros.get(0);
-                        String mensaje = "Primer registro: " + primerRegistro.getPatente() + ", Hora Inicio: " + primerRegistro.getHoraFin() + ", Hora Fin: " + primerRegistro.getHoraFin();
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_SHORT).show());
-                    } else {
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, "No hay registros en la base de datos", Toast.LENGTH_SHORT).show());
-                    }
-                }).start();
-            });
-        }
-
+    }
 
     public void renderTitulo() {
         TextView textViewTitle = findViewById(R.id.textView3321);

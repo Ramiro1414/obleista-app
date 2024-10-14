@@ -26,4 +26,7 @@ public interface RegistroEstacionamientoSinAppDao {
 
     @Delete
     void delete(RegistroEstacionamientoSinApp patronPatente);
+
+    @Query("DELETE FROM registro_estacionamiento_sin_app")
+    void deleteAll();
 }

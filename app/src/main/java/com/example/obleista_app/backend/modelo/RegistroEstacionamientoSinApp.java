@@ -6,22 +6,20 @@ import androidx.room.TypeConverters;
 
 import com.example.obleista_app.backend.repository.Converter;
 
-import java.sql.Timestamp;
-
 @Entity(tableName = "registro_estacionamiento_sin_app")
 public class RegistroEstacionamientoSinApp {
     @PrimaryKey(autoGenerate = true)
     private int id;
     @TypeConverters(Converter.class)
-    private Timestamp horaInicio;
+    private Long horaInicio;
     @TypeConverters(Converter.class)
-    private Timestamp horaFin;
+    private Long horaFin;
     private String patente;
 
     public RegistroEstacionamientoSinApp() {
     }
 
-    public RegistroEstacionamientoSinApp(int id, Timestamp horaInicio, Timestamp horaFin, String patente) {
+    public RegistroEstacionamientoSinApp(int id, Long horaInicio, Long horaFin, String patente) {
         this.id = id;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
@@ -36,19 +34,19 @@ public class RegistroEstacionamientoSinApp {
         this.id = id;
     }
 
-    public Timestamp getHoraInicio() {
+    public Long getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(Timestamp horaInicio) {
+    public void setHoraInicio(Long horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public Timestamp getHoraFin() {
+    public Long getHoraFin() {
         return horaFin;
     }
 
-    public void setHoraFin(Timestamp horaFin) {
+    public void setHoraFin(Long horaFin) {
         this.horaFin = horaFin;
     }
 

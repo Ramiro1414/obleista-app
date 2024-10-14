@@ -14,7 +14,7 @@ import com.example.obleista_app.backend.repository.RegistroEstacionamientoSinApp
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
-import java.sql.Timestamp;
+import java.util.Calendar;
 
 public class VenderEstacionamientoActivity extends AppCompatActivity {
 
@@ -38,10 +38,10 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
 
         btnVender.setOnClickListener(v -> {
             String patente = inputPatente.getText().toString();
-            int horaInicio = timePickerInicio.getCurrentHour();
-            int minutoInicio = timePickerInicio.getCurrentMinute();
-            int horaFin = timePickerFin.getCurrentHour();
-            int minutoFin = timePickerFin.getCurrentMinute();
+            int horaInicio = timePickerInicio.getHour();
+            int minutoInicio = timePickerInicio.getMinute();
+            int horaFin = timePickerFin.getHour();
+            int minutoFin = timePickerFin.getMinute();
 
             // Convierte las horas y minutos en milisegundos
             long horaInicioMillis = convertirAHoraEnMilisegundos(horaInicio, minutoInicio);
@@ -51,8 +51,8 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
                 // Crea el registro y lo guarda en la base de datos
                 RegistroEstacionamientoSinApp registro = new RegistroEstacionamientoSinApp();
                 registro.setPatente(patente);
-                registro.setHoraInicio(new Timestamp(horaInicioMillis));
-                registro.setHoraFin(new Timestamp(horaFinMillis));
+                registro.setHoraInicio(horaInicioMillis);
+                registro.setHoraFin(horaFinMillis);
 
                 new Thread(() -> {
                     db.registroDao().insert(registro);
@@ -73,6 +73,15 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
     }
 
     private long convertirAHoraEnMilisegundos(int hora, int minuto) {
-        return (hora * 60L + minuto) * 60L * 1000L;
+        // Obtener la fecha actual
+        Calendar calendar = Calendar.getInstance();
+        // Establecer la hora y el minuto
+        calendar.set(Calendar.HOUR_OF_DAY, hora);
+        calendar.set(Calendar.MINUTE, minuto);
+        // Establecer los segundos y milisegundos a cero
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        // Devolver el tiempo en milisegundos desde el epoch
+        return calendar.getTimeInMillis();
     }
 }

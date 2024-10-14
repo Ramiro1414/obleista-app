@@ -14,6 +14,7 @@ import com.example.obleista_app.backend.modelo.RegistroAgenteTransito;
 import com.example.obleista_app.backend.modelo.RegistroAgenteTransitoDTO;
 import com.example.obleista_app.backend.modelo.RegistroEstacionamientoSinApp;
 import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBase;
+import com.example.obleista_app.backend.repository.RegistroEstacionamientoSinAppDataBase;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
@@ -33,6 +34,7 @@ public class SubirRegistros {
     private final ApiServicePrueba apiService;
     private final Context context;
     private RegistroAgenteTransitoDataBase db;
+    private RegistroEstacionamientoSinAppDataBase dbEstacionamientoSinApp;
     // Agrega un ExecutorService con un tamaño de hilo fijo
     private final ExecutorService executorService = Executors.newFixedThreadPool(4); // Ajusta el tamaño del pool según sea necesario
 
@@ -50,15 +52,59 @@ public class SubirRegistros {
                         RegistroAgenteTransitoDataBase.class, "registro_agente_transito_db")
                 .fallbackToDestructiveMigration() // Manejo de migraciones, ajusta según sea necesario
                 .build();
+
+        // Inicializa la base de datos
+        this.dbEstacionamientoSinApp = Room.databaseBuilder(context.getApplicationContext(),
+                        RegistroEstacionamientoSinAppDataBase.class, "registros_estacionamiento_db")
+                .fallbackToDestructiveMigration() // Manejo de migraciones, ajusta según sea necesario
+                .build();
     }
 
     /** Envia los registros de conductor sin app a la base de datos del sistema central */
     public void enviarRegistrosConductorSinApp() {
-        return;
+        // Primero obtenemos todos los registros de la base de datos
+        executorService.execute(() -> {
+            List<RegistroEstacionamientoSinApp> registros = dbEstacionamientoSinApp.registroDao().findAll();
+
+            if (registros != null && !registros.isEmpty()) {
+                for (RegistroEstacionamientoSinApp registro : registros) {
+                    // Para cada registro, enviamos los datos al backend
+                    enviarRegistroConductorSinApp(registro);
+                }
+                dbEstacionamientoSinApp.registroDao().deleteAll();
+            } else {
+                ((Activity) context).runOnUiThread(() -> {
+                    Toast.makeText(context, "No hay registros para enviar", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     public void enviarRegistroConductorSinApp(RegistroEstacionamientoSinApp registro) {
 
+        RegistroEstacionamientoSinApp registroAEnviar = new RegistroEstacionamientoSinApp();
+        registroAEnviar.setId(0);
+        registroAEnviar.setHoraInicio(registro.getHoraInicio());
+        registroAEnviar.setHoraFin(registro.getHoraFin());
+        registroAEnviar.setPatente(registro.getPatente());
+
+        // Enviar el objeto usando Retrofit
+        apiService.registrarDatosConductor(registroAEnviar).enqueue(new Callback<DataPackage>() {
+            @Override
+            public void onResponse(Call<DataPackage> call, Response<DataPackage> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(context, "Registro enviado exitosamente:\n" + response.body().getData().toString(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Error al enviar registro: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DataPackage> call, Throwable t) {
+                Log.e("DataError", "Fallo en la solicitud: " + t.getMessage());
+                Toast.makeText(context, "Error al enviar registro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void enviarRegistrosASistemaCentral() {
