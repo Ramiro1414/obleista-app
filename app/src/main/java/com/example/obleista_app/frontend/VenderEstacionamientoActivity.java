@@ -41,6 +41,32 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
         timePickerFin.setIs24HourView(true);
         Button btnVender = findViewById(R.id.buttonVenderEstacionamiento);
 
+        // Obtener la hora y minuto actual
+        Calendar calendar = Calendar.getInstance();
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+
+        // Establecer la hora de inicio al horario actual
+        timePickerInicio.setHour(currentHour);
+        timePickerInicio.setMinute(currentMinute);
+
+        // Calcular la hora de fin (30 minutos después de la hora de inicio)
+        int endHour = currentHour;
+        int endMinute = currentMinute + 30;
+
+        // Ajustar la hora de fin si los minutos superan 59
+        if (endMinute >= 60) {
+            endMinute -= 60;
+            endHour++;
+            if (endHour >= 24) {
+                endHour = 0; // Reiniciar a 0 si pasa de 23
+            }
+        }
+
+        // Establecer la hora de fin en el TimePicker
+        timePickerFin.setHour(endHour);
+        timePickerFin.setMinute(endMinute);
+
         btnVender.setOnClickListener(v -> {
             String patente = inputPatente.getText().toString();
             int horaInicio = timePickerInicio.getHour();
