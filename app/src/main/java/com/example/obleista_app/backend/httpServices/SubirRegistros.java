@@ -75,7 +75,7 @@ public class SubirRegistros {
                 dbEstacionamientoSinApp.registroDao().deleteAll();
             } else {
                 ((Activity) context).runOnUiThread(() -> {
-                    Toast.makeText(context, "No hay registros para enviar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "No hay registros de estacionamiento de conductores sin la aplicacion para enviar", Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -175,7 +175,7 @@ public class SubirRegistros {
                 db.registroDao().deleteAll();
             } else {
                 ((Activity) context).runOnUiThread(() -> {
-                    Toast.makeText(context, "No hay registros para enviar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "No hay registros de agente de transito para enviar", Toast.LENGTH_SHORT).show();
                 });
             }
         });

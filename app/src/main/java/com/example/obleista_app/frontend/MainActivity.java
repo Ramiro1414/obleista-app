@@ -9,19 +9,12 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import com.example.obleista_app.R;
 import com.example.obleista_app.backend.httpServices.SubirRegistros;
-import com.example.obleista_app.backend.modelo.RegistroEstacionamientoSinApp;
-import com.example.obleista_app.backend.repository.RegistroEstacionamientoSinAppDataBase;
 import com.example.obleista_app.backend.service.CameraManager;
-import com.example.obleista_app.backend.service.HoraFechaDispositivo;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,27 +30,17 @@ public class MainActivity extends AppCompatActivity {
         renderTitulo();
 
         Button button = findViewById(R.id.miBoton);
-        Button buttonHoraFecha = findViewById(R.id.miBotonHoraFecha);
         Button buttonVenderEstacionamiento = findViewById(R.id.buttonVenderEstacionamiento);
         Button buttonSubirRegistros = findViewById(R.id.buttonSubirRegistros);
-        Button buttonSubirRegistrosEstacionamiento = findViewById(R.id.buttonSubirRegistrosEstacionamiento);
 
         CameraManager cameraManager = new CameraManager(this, imageView);
 
-        HoraFechaDispositivo horaFechaDispositivo = new HoraFechaDispositivo(MainActivity.this);
-
         button.setOnClickListener(v -> cameraManager.abrirCamara());
-
-        buttonHoraFecha.setOnClickListener(v -> horaFechaDispositivo.mostrarHoraYFechaDispositivo());
-
-        buttonSubirRegistrosEstacionamiento.setOnClickListener( v -> {
-            SubirRegistros subirRegistros = new SubirRegistros(this);
-            subirRegistros.enviarRegistrosConductorSinApp();
-        });
 
         buttonSubirRegistros.setOnClickListener( v -> {
             SubirRegistros subirRegistros = new SubirRegistros(this);
             subirRegistros.enviarRegistrosASistemaCentralConFotos();
+            subirRegistros.enviarRegistrosConductorSinApp();
         });
 
         buttonVenderEstacionamiento.setOnClickListener(v -> {
