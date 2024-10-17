@@ -3,20 +3,30 @@ package com.example.obleista_app.backend.modelo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "punto")
 public class Punto {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private double latitud;
     private double longitud;
+    private int poligonoId;
 
     public Punto() {
     }
 
-    public Punto(int id, double latitud, double longitud) {
+    public Punto(int id, double latitud, double longitud, int poligonoId) {
         this.id = id;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.poligonoId = poligonoId;
+    }
+
+    public int getPoligonoId() {
+        return poligonoId;
+    }
+
+    public void setPoligonoId(int poligonoId) {
+        this.poligonoId = poligonoId;
     }
 
     public int getId() {

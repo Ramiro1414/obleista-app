@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.obleista_app.R;
+import com.example.obleista_app.backend.httpServices.ActualizacionService;
 import com.example.obleista_app.backend.httpServices.SubirRegistros;
 import com.example.obleista_app.backend.service.CameraManager;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         Button button = findViewById(R.id.miBoton);
         Button buttonVenderEstacionamiento = findViewById(R.id.buttonVenderEstacionamiento);
         Button buttonSubirRegistros = findViewById(R.id.buttonSubirRegistros);
+        Button buttonActualizar = findViewById(R.id.buttonActualziar);
 
         CameraManager cameraManager = new CameraManager(this, imageView);
 
@@ -46,6 +48,15 @@ public class MainActivity extends AppCompatActivity {
         buttonVenderEstacionamiento.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VenderEstacionamientoActivity.class);
             startActivity(intent);
+        });
+
+        buttonActualizar.setOnClickListener(v -> {
+            ActualizacionService actualizacionService = new ActualizacionService(this);
+            actualizacionService.actualizarPoligonosDeEstacionamiento();
+            actualizacionService.actualizarPatronesDePatentes();
+            actualizacionService.actualizarHorariosDeEstacionamiento();
+
+            new DataBaseLogPrinter(this);
         });
     }
 

@@ -31,7 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SubirRegistros {
 
     private static final String BASE_URL = "http://if012estm.fi.mdn.unp.edu.ar:28003/";
-    private final ApiServicePrueba apiService;
+    private final ApiService apiService;
     private final Context context;
     private RegistroAgenteTransitoDataBase db;
     private RegistroEstacionamientoSinAppDataBase dbEstacionamientoSinApp;
@@ -46,7 +46,7 @@ public class SubirRegistros {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        apiService = retrofit.create(ApiServicePrueba.class);
+        apiService = retrofit.create(ApiService.class);
 
         // Inicializa la base de datos
         this.db = Room.databaseBuilder(context.getApplicationContext(),

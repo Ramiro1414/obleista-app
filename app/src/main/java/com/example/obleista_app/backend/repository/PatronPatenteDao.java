@@ -18,6 +18,9 @@ public interface PatronPatenteDao {
     @Query("SELECT * FROM patron_patente WHERE id = :id")
     PatronPatente findById(int id);
 
+    @Query("DELETE FROM patron_patente")
+    void deleteAll();
+
     @Insert
     void insert(PatronPatente patronPatente);
 

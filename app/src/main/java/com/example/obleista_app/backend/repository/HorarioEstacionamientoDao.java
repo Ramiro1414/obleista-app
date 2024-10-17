@@ -18,6 +18,9 @@ public interface HorarioEstacionamientoDao {
     @Query("SELECT * FROM horario_estacionamiento WHERE id = :id")
     HorarioEstacionamiento findById(int id);
 
+    @Query("DELETE FROM horario_estacionamiento")
+    void deleteAll();
+
     @Insert
     void insert(HorarioEstacionamiento horarioEstacionamiento);
 

@@ -1,12 +1,8 @@
 package com.example.obleista_app.backend.modelo;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import java.util.Collection;
 
-@Entity(tableName = "horario_estacionamiento")
-public class HorarioEstacionamiento {
-
-    @PrimaryKey(autoGenerate = true)
+public class HorarioEstacionamientoDTO {
     private int id;
 
     private String nombre;
@@ -14,14 +10,14 @@ public class HorarioEstacionamiento {
     private String fechaInicio;
     private String fechaFin;
 
-    public HorarioEstacionamiento() {
-    }
+    private Collection<HoraInicioHoraFinDTO> horariosDelDia;
 
-    public HorarioEstacionamiento(int id, String nombre, String fechaInicio, String fechaFin) {
+    public HorarioEstacionamientoDTO(int id, String nombre, String fechaInicio, String fechaFin, Collection<HoraInicioHoraFinDTO> horariosDelDia) {
         this.id = id;
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
+        this.horariosDelDia = horariosDelDia;
     }
 
     public int getId() {
@@ -54,5 +50,13 @@ public class HorarioEstacionamiento {
 
     public void setFechaFin(String fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    public Collection<HoraInicioHoraFinDTO> getHorariosDelDia() {
+        return horariosDelDia;
+    }
+
+    public void setHorariosDelDia(Collection<HoraInicioHoraFinDTO> horariosDelDia) {
+        this.horariosDelDia = horariosDelDia;
     }
 }
