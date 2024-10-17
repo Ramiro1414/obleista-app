@@ -37,7 +37,7 @@ public class SubirRegistros {
     private RegistroEstacionamientoSinAppDataBase dbEstacionamientoSinApp;
     // Agrega un ExecutorService con un tamaño de hilo fijo
     private final ExecutorService executorService = Executors.newFixedThreadPool(4); // Ajusta el tamaño del pool según sea necesario
-    private final static int VALOR_COMPRESION_IMAGEN = 70;
+    private final static int VALOR_COMPRESION_IMAGEN = 33;
 
     public SubirRegistros(Context context) {
         this.context = context;
