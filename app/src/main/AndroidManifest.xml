@@ -40,7 +40,7 @@
 
     <activity android:name=".frontend.VenderEstacionamientoActivity" />
 
-    <activity android:name=".frontend.CrearRegistroAgenteTransitoActivity" />
+    <activity android:name=".frontend.ModoObleistaActivity" />
 
 
     </application>

@@ -55,7 +55,7 @@ public class CoordsManager {
             if (location != null) {
                 double latitud = location.getLatitude();
                 double longitud = location.getLongitude();
-                Toast.makeText(activity, "Latitud: " + latitud + "\nLongitud: " + longitud, Toast.LENGTH_LONG).show();
+                //Toast.makeText(activity, "Latitud: " + latitud + "\nLongitud: " + longitud, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(activity, "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show();
             }

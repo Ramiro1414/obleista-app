@@ -7,7 +7,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,41 +14,43 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.obleista_app.R;
 import com.example.obleista_app.backend.httpServices.ActualizacionService;
 import com.example.obleista_app.backend.httpServices.SubirRegistros;
-import com.example.obleista_app.backend.service.CameraManager;
 
 public class MainActivity extends AppCompatActivity {
-
-    private CameraManager cameraManager;
-    private ImageView imageView;
-    private static final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        solicitarPermiso();
+
         renderTitulo();
 
-        Button button = findViewById(R.id.miBoton);
+        Button button = findViewById(R.id.buttonModoObleista);
         Button buttonVenderEstacionamiento = findViewById(R.id.buttonVenderEstacionamiento);
         Button buttonSubirRegistros = findViewById(R.id.buttonSubirRegistros);
         Button buttonActualizar = findViewById(R.id.buttonActualziar);
 
-        CameraManager cameraManager = new CameraManager(this, imageView);
+        /* Iniciar modo obleista */
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ModoObleistaActivity.class);
+            startActivity(intent);
+        });
 
-        button.setOnClickListener(v -> cameraManager.abrirCamara());
-
+        /* Enviar los registros de agente de transito y registros de estacionamiento de personas sin la aplicacion */
         buttonSubirRegistros.setOnClickListener( v -> {
             SubirRegistros subirRegistros = new SubirRegistros(this);
             subirRegistros.enviarRegistrosASistemaCentralConFotos();
             subirRegistros.enviarRegistrosConductorSinApp();
         });
 
+        /* Iniciar modo venta de estacionamiento a personas que no tienen la apicacion */
         buttonVenderEstacionamiento.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, VenderEstacionamientoActivity.class);
             startActivity(intent);
         });
 
+        /* Actualizar datos (poligonos, horarios y patrones de patentes) */
         buttonActualizar.setOnClickListener(v -> {
             ActualizacionService actualizacionService = new ActualizacionService(this);
             actualizacionService.actualizarPoligonosDeEstacionamiento();
@@ -72,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(cyanColor);
         spannableString.setSpan(colorSpan, 8, 10, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewTitle.setText(spannableString);
+    }
+
+    private void solicitarPermiso() {
+
+        // IMPLEMENTAR
+
     }
 
 }

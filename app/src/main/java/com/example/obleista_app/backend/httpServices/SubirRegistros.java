@@ -1,10 +1,13 @@
 package com.example.obleista_app.backend.httpServices;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,6 +20,7 @@ import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBas
 import com.example.obleista_app.backend.repository.RegistroEstacionamientoSinAppDataBase;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -37,7 +41,8 @@ public class SubirRegistros {
     private RegistroEstacionamientoSinAppDataBase dbEstacionamientoSinApp;
     // Agrega un ExecutorService con un tamaño de hilo fijo
     private final ExecutorService executorService = Executors.newFixedThreadPool(4); // Ajusta el tamaño del pool según sea necesario
-    private final static int VALOR_COMPRESION_IMAGEN = 33;
+    private final static int VALOR_COMPRESION_IMAGEN = 100;
+    private final static String RUTA_IMAGENES = "Registros_Estacionamiento/";
 
     public SubirRegistros(Context context) {
         this.context = context;
@@ -171,6 +176,7 @@ public class SubirRegistros {
                 for (RegistroAgenteTransito registro : registros) {
                     // Para cada registro, enviamos los datos al backend
                     enviarRegistroConFoto(registro);
+                    eliminarFoto(registro.getFoto());
                 }
                 db.registroDao().deleteAll();
             } else {
@@ -179,6 +185,24 @@ public class SubirRegistros {
                 });
             }
         });
+    }
+
+    private void eliminarFoto(String nombreFoto) {
+        // Obtener el ContentResolver
+        ContentResolver resolver = context.getContentResolver();
+
+        // Construir la URI de la imagen a partir del MediaStore
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Images.Media.RELATIVE_PATH + "=? AND " + MediaStore.Images.Media.DISPLAY_NAME + "=?";
+        String[] selectionArgs = new String[]{ "Pictures/" + RUTA_IMAGENES, nombreFoto };
+
+        // Eliminar la foto utilizando el ContentResolver
+        int rowsDeleted = resolver.delete(uri, selection, selectionArgs);
+        if (rowsDeleted > 0) {
+            Log.d("Eliminar Foto", "La foto " + nombreFoto + " ha sido eliminada correctamente.");
+        } else {
+            Log.e("Eliminar Foto", "No se pudo eliminar la foto " + nombreFoto + ". Verifica que exista.");
+        }
     }
 
     private void enviarRegistroConFoto(RegistroAgenteTransito registro) {
