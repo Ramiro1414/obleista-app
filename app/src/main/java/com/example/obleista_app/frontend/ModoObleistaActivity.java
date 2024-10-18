@@ -138,18 +138,19 @@ public class ModoObleistaActivity extends AppCompatActivity {
             Bitmap image = (Bitmap) data.getExtras().get("data");
 
             OCRService ocrService = new OCRService(this);
-            ocrService.recognizePlate(image);
+            ocrService.recognizePlate(image, plate -> {
+                Toast.makeText(this, "Patente: " + plate, Toast.LENGTH_LONG).show();
 
-            // Guardar la imagen en la carpeta "Pictures/Registros_Estacionamiento"
-            String savedImagePath = guardarImagenEnAlmacenamientoExterno(image);
+                // Guardar la imagen en almacenamiento externo
+                String savedImagePath = guardarImagenEnAlmacenamientoExterno(image);
 
-            // Mostrar la imagen en el ImageView
-            if (savedImagePath != null) {
-                imagenSeleccionada.setImageBitmap(image);
-                Log.d("IMAGEN", "Imagen guardada en: " + savedImagePath );
-            } else {
-                Log.e("IMAGEN", "Error al guardar la imagen");
-            }
+                if (savedImagePath != null) {
+                    imagenSeleccionada.setImageBitmap(image);
+                    Log.d("IMAGEN", "Imagen guardada en: " + savedImagePath);
+                } else {
+                    Log.e("IMAGEN", "Error al guardar la imagen");
+                }
+            });
         }
     }
 

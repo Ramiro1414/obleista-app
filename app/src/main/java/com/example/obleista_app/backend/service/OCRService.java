@@ -1,40 +1,31 @@
 package com.example.obleista_app.backend.service;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.content.Context;
 import android.util.Log;
-
-import com.example.obleista_app.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
 
 import okhttp3.*;
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 
 public class OCRService {
     private static final String TOKEN = "249bbb07b2b7ae4398610603ecf88530ac5a936b";
-    private Context context; // Agrega el contexto
+    private Context context;
 
     public OCRService(Context context) {
-        this.context = context; // Inicializa el contexto
+        this.context = context;
     }
 
-    public void recognizePlate(Bitmap bitmap) {
+    public void recognizePlate(Bitmap bitmap, PlateRecognitionCallback callback) {
         new Thread(() -> {
             try {
-                // Cargar la imagen desde los recursos
-                //Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.demo2);
-
                 // Convertir el Bitmap a un archivo temporal
                 File tempFile = new File(context.getCacheDir(), "temp_image.png");
                 FileOutputStream fos = new FileOutputStream(tempFile);
-                // Guardar el Bitmap sin pérdida de calidad
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos); // PNG no comprime, 100% de calidad
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
                 fos.flush();
                 fos.close();
 
@@ -58,13 +49,10 @@ public class OCRService {
                 Response response = client.newCall(request).execute();
                 String responseBody = response.body().string();
 
-                // Imprimir la respuesta JSON para depuración
                 Log.d("OCRService", "Respuesta JSON: " + responseBody);
 
-                // Manejar la respuesta...
                 JSONObject jsonResponse = new JSONObject(responseBody);
 
-                // Verifica si 'results' está presente en el JSON
                 if (jsonResponse.has("results")) {
                     JSONArray results = jsonResponse.getJSONArray("results");
                     String plate = null;
@@ -74,20 +62,20 @@ public class OCRService {
                         plate = bestResult.getString("plate");
                     }
 
-                    // Muestra el resultado en un Log
-                    if (plate != null) {
-                        Log.d("OCRService", "Patente: " + plate);
-                    } else {
-                        Log.d("OCRService", "No se encontraron patentes.");
-                    }
+                    String finalPlate = plate;
+                    runOnUiThread(() -> callback.onPlateRecognized(finalPlate != null ? finalPlate : "No encontrada"));
                 } else {
-                    Log.d("OCRService", "La propiedad 'results' no se encuentra en el JSON.");
+                    runOnUiThread(() -> callback.onPlateRecognized("No encontrada"));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                runOnUiThread(() -> callback.onPlateRecognized("Error en OCR"));
             }
         }).start();
     }
 
-
+    // Ejecutar en el hilo principal
+    private void runOnUiThread(Runnable runnable) {
+        new android.os.Handler(context.getMainLooper()).post(runnable);
+    }
 }
