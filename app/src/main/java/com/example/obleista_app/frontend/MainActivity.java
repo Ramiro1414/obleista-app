@@ -10,19 +10,27 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import com.example.obleista_app.R;
 import com.example.obleista_app.backend.httpServices.ActualizacionService;
 import com.example.obleista_app.backend.httpServices.SubirRegistros;
+import com.example.obleista_app.backend.repository.PoligonoDataBase;
+import com.example.obleista_app.backend.service.OCRService;
 
 public class MainActivity extends AppCompatActivity {
+
+    private PoligonoDataBase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        solicitarPermiso();
+        db = Room.databaseBuilder(getApplicationContext(),
+                        PoligonoDataBase.class, "poligono")
+                .allowMainThreadQueries()
+                .build();
 
         renderTitulo();
 
@@ -73,12 +81,6 @@ public class MainActivity extends AppCompatActivity {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(cyanColor);
         spannableString.setSpan(colorSpan, 8, 10, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewTitle.setText(spannableString);
-    }
-
-    private void solicitarPermiso() {
-
-        // IMPLEMENTAR
-
     }
 
 }

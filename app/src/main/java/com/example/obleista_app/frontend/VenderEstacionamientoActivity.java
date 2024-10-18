@@ -2,13 +2,17 @@ package com.example.obleista_app.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.obleista_app.R;
+import com.example.obleista_app.backend.modelo.Poligono;
 import com.example.obleista_app.backend.modelo.RegistroEstacionamientoSinApp;
+import com.example.obleista_app.backend.repository.PoligonoDataBase;
 import com.example.obleista_app.backend.repository.RegistroEstacionamientoSinAppDataBase;
 
 import android.app.AlertDialog;  // Agregar esta importación
@@ -17,11 +21,18 @@ import android.content.DialogInterface;  // Agregar esta importación
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class VenderEstacionamientoActivity extends AppCompatActivity {
 
     private RegistroEstacionamientoSinAppDataBase db;
+    private PoligonoDataBase poligonoDataBase;
+    private Spinner spinnerPoligonos;
+    private Poligono poligono;
+    private double precio;
+    private int tiempoEstacionamiento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,18 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
                         RegistroEstacionamientoSinAppDataBase.class, "registros_estacionamiento_db")
                 .allowMainThreadQueries()
                 .build();
+
+        // Inicializar la base de datos
+        poligonoDataBase = Room.databaseBuilder(getApplicationContext(),
+                        PoligonoDataBase.class, "poligono")
+                .allowMainThreadQueries() // No recomendado para operaciones grandes
+                .build();
+
+        // Obtener el Spinner del layout
+        spinnerPoligonos = findViewById(R.id.spinnerPoligonos);
+
+        // Cargar los datos en el Spinner
+        cargarPoligonosEnSpinner();
 
         EditText inputPatente = findViewById(R.id.inputPatente);
         TimePicker timePickerInicio = findViewById(R.id.horaInicio);
@@ -73,6 +96,9 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
             int minutoInicio = timePickerInicio.getMinute();
             int horaFin = timePickerFin.getHour();
             int minutoFin = timePickerFin.getMinute();
+            String nombrePoligono = spinnerPoligonos.getSelectedItem().toString();
+
+            this.poligono = poligonoDataBase.poligonoDao().findByNombre(nombrePoligono);
 
             // Convierte las horas y minutos en milisegundos
             long horaInicioMillis = convertirAHoraEnMilisegundos(horaInicio, minutoInicio);
@@ -95,7 +121,7 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
             }
 
             // Muestra el cuadro de diálogo para confirmar la venta
-            mostrarDialogoConfirmacion(patente, horaInicioMillis, horaFinMillis);
+            mostrarDialogoConfirmacion(patente, horaInicioMillis, horaFinMillis, poligono);
         });
 
         Button btnRegresar = findViewById(R.id.buttonRegresar);
@@ -108,7 +134,26 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
 
     }
 
-    private void mostrarDialogoConfirmacion(String patente, long horaInicioMillis, long horaFinMillis) {
+    private void cargarPoligonosEnSpinner() {
+        // Obtener la lista de polígonos desde la base de datos
+        List<Poligono> poligonos = poligonoDataBase.poligonoDao().findAll();
+
+        // Extraer solo los nombres de los polígonos
+        List<String> nombresPoligonos = new ArrayList<>();
+        for (Poligono poligono : poligonos) {
+            nombresPoligonos.add(poligono.getNombre());
+        }
+
+        // Crear un adaptador para el Spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, nombresPoligonos);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Asignar el adaptador al Spinner
+        spinnerPoligonos.setAdapter(adapter);
+    }
+
+    private void mostrarDialogoConfirmacion(String patente, long horaInicioMillis, long horaFinMillis, Poligono poligono) {
         // Convertir milisegundos a horas y minutos para mostrar en el resumen
         Calendar calendarInicio = Calendar.getInstance();
         calendarInicio.setTimeInMillis(horaInicioMillis);
@@ -121,7 +166,7 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
         // Crear el cuadro de diálogo
         new AlertDialog.Builder(this)
                 .setTitle("Confirmar venta")
-                .setMessage("Patente: " + patente + "\nHora de inicio: " + horaInicioStr + "\nHora de fin: " + horaFinStr)
+                .setMessage("Patente: " + patente + "\nHora de inicio: " + horaInicioStr + "\nHora de fin: " + horaFinStr + "\nPoligono: " + poligono.getNombre())
                 .setPositiveButton("CONFIRMAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

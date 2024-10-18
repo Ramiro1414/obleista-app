@@ -1,32 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <!-- Contenedor horizontal para el botón de regresar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <Button
-            android:id="@+id/buttonRegresar"
+        <!-- Contenedor horizontal para el botón de regresar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/buttonRegresar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:padding="12dp"
+                android:text="@string/mensajeBotonRegresar"
+                android:textColor="#FFFFFF" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <!-- Campo de texto para ingresar texto -->
+        <EditText
+            android:id="@+id/inputPatente"
+            android:layout_width="378dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="30dp"
+            android:hint="@string/mensajeCampoTextoIngresarPatente"
+            android:inputType="text" />
+
+        <!-- Etiqueta para el TimePicker de hora de inicio -->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_background"
-            android:padding="12dp"
-            android:text="@string/mensajeBotonRegresar"
-            android:textColor="#FFFFFF" />
+            android:text="@string/mensajeHoraInicio"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:textSize="16sp" />
 
-        <Space
-            android:layout_width="0dp"
+        <!-- Contenedor para el TimePicker de hora de inicio -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:gravity="center">
 
+            <TimePicker
+                android:id="@+id/horaInicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner" />
+        </LinearLayout>
+
+        <!-- Etiqueta para el TimePicker de hora de finalización -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mensajeHoraFin"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:textSize="16sp" />
+
+        <!-- Contenedor para el TimePicker de hora de finalización -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:gravity="center">
+
+            <TimePicker
+                android:id="@+id/horaFin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="25dp" />
+
+        </LinearLayout>
+
+        <!-- Etiqueta para el Spinner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mensajePoligono"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Spinner para seleccionar el polígono -->
+        <Spinner
+            android:id="@+id/spinnerPoligonos"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@android:color/white"/>
+
+        <!-- Botón de Vender Estacionamiento debajo del TimePicker de hora de finalización -->
         <Button
             android:id="@+id/buttonVenderEstacionamiento"
             android:layout_width="wrap_content"
@@ -36,63 +121,6 @@
             android:background="@drawable/button_vender_estacionamiento"
             android:text="@string/mensajeVenderEstacionamiento"
             android:textColor="#FFFFFF" />
+
     </LinearLayout>
-
-    <!-- Campo de texto para ingresar texto -->
-    <EditText
-        android:id="@+id/inputPatente"
-        android:layout_width="378dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="30dp"
-        android:hint="@string/mensajeCampoTextoIngresarPatente"
-        android:inputType="text" />
-
-    <!-- Etiqueta para el TimePicker de hora de inicio -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mensajeHoraInicio"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:textSize="16sp" />
-
-    <!-- Contenedor para el TimePicker de hora de inicio -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp"
-        android:gravity="center">
-
-        <TimePicker
-            android:id="@+id/horaInicio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:timePickerMode="spinner" />
-    </LinearLayout>
-
-    <!-- Etiqueta para el TimePicker de hora de finalización -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mensajeHoraFin"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:textSize="16sp" />
-
-    <!-- Contenedor para el TimePicker de hora de finalización -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp"
-        android:gravity="center">
-
-        <TimePicker
-            android:id="@+id/horaFin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:timePickerMode="spinner" />
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

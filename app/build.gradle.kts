@@ -6,6 +6,12 @@ android {
     namespace = "com.example.obleista_app"
     compileSdk = 34
 
+    packagingOptions {
+        resources {
+            excludes += setOf("META-INF/DEPENDENCIES")
+        }
+    }
+
     defaultConfig {
         applicationId = "com.example.obleista_app"
         minSdk = 24
@@ -43,6 +49,9 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler) // Para Java
+
+    implementation("com.konghq:unirest-java:3.11.11")
+    implementation("org.json:json:20230227")
 
     // Retrofit y Gson Converter
     implementation(libs.retrofit)

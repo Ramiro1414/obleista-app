@@ -18,6 +18,9 @@ public interface PoligonoDao {
     @Query("SELECT * FROM poligono WHERE id = :id")
     Poligono findById(int id);
 
+    @Query("SELECT * FROM poligono WHERE nombre = :nombre")
+    Poligono findByNombre(String nombre);
+
     @Query("DELETE FROM poligono")
     void deleteAll();
 

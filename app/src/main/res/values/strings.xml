@@ -2,6 +2,7 @@
     <string name="app_name">EstacionAR Agentes Tránsito</string>
     <string name="mensajeBotonModoObleista">Tomar registro</string>
     <string name="mensajeBotonCamara">Camara</string>
+    <string name="mensajePoligono">Poligono de estacionamiento:</string>
     <string name="mensajeBotonHoraYFecha">Hora y fecha</string>
     <string name="mensajeBotonRegresar">Regresar</string>
     <string name="mensajeBotonGuardar">Guardar</string>

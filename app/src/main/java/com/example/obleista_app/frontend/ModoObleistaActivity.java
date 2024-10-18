@@ -27,6 +27,7 @@ import com.example.obleista_app.backend.modelo.RegistroAgenteTransito;
 import com.example.obleista_app.backend.repository.RegistroAgenteTransitoDataBase;
 import com.example.obleista_app.backend.service.CoordsManager;
 import com.example.obleista_app.backend.service.CoordsService;
+import com.example.obleista_app.backend.service.OCRService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -135,6 +136,9 @@ public class ModoObleistaActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             Bitmap image = (Bitmap) data.getExtras().get("data");
+
+            OCRService ocrService = new OCRService(this);
+            ocrService.recognizePlate(image);
 
             // Guardar la imagen en la carpeta "Pictures/Registros_Estacionamiento"
             String savedImagePath = guardarImagenEnAlmacenamientoExterno(image);
