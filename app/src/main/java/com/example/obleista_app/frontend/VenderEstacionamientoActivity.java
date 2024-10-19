@@ -98,6 +98,15 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
             int minutoFin = timePickerFin.getMinute();
             String nombrePoligono = spinnerPoligonos.getSelectedItem().toString();
 
+            // Calcular los minutos totales desde el inicio del día para la hora de inicio
+            int minutosInicioTotales = horaInicio * 60 + minutoInicio;
+
+            // Calcular los minutos totales desde el inicio del día para la hora de fin
+            int minutosFinTotales = horaFin * 60 + minutoFin;
+
+            // Calcular la diferencia en minutos
+            int diferenciaMinutos = minutosFinTotales - minutosInicioTotales;
+
             this.poligono = poligonoDataBase.poligonoDao().findByNombre(nombrePoligono);
 
             // Convierte las horas y minutos en milisegundos
@@ -121,7 +130,7 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
             }
 
             // Muestra el cuadro de diálogo para confirmar la venta
-            mostrarDialogoConfirmacion(patente, horaInicioMillis, horaFinMillis, poligono);
+            mostrarDialogoConfirmacion(patente, horaInicioMillis, horaFinMillis, poligono, diferenciaMinutos);
         });
 
         Button btnRegresar = findViewById(R.id.buttonRegresar);
@@ -153,7 +162,7 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
         spinnerPoligonos.setAdapter(adapter);
     }
 
-    private void mostrarDialogoConfirmacion(String patente, long horaInicioMillis, long horaFinMillis, Poligono poligono) {
+    private void mostrarDialogoConfirmacion(String patente, long horaInicioMillis, long horaFinMillis, Poligono poligono, int diferenciaMinutos) {
         // Convertir milisegundos a horas y minutos para mostrar en el resumen
         Calendar calendarInicio = Calendar.getInstance();
         calendarInicio.setTimeInMillis(horaInicioMillis);
@@ -163,10 +172,12 @@ public class VenderEstacionamientoActivity extends AppCompatActivity {
         calendarFin.setTimeInMillis(horaFinMillis);
         String horaFinStr = String.format("%02d:%02d", calendarFin.get(Calendar.HOUR_OF_DAY), calendarFin.get(Calendar.MINUTE));
 
+        double total = diferenciaMinutos * (poligono.getPrecio() / 60);
+
         // Crear el cuadro de diálogo
         new AlertDialog.Builder(this)
                 .setTitle("Confirmar venta")
-                .setMessage("Patente: " + patente + "\nHora de inicio: " + horaInicioStr + "\nHora de fin: " + horaFinStr + "\nPoligono: " + poligono.getNombre())
+                .setMessage("Patente: " + patente + "\nHora de inicio: " + horaInicioStr + "\nHora de fin: " + horaFinStr + "\nPoligono: " + poligono.getNombre() + "\nTotal: $ " + total)
                 .setPositiveButton("CONFIRMAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
